@@ -1,0 +1,563 @@
+<!--****************************||  Aquisição - Versão 1 ||********************************
+Gestor do Processo:		FABIOLA PENHA 
+Unidade Gestora: 		USN
+Gerente da unidade: 	LUANA DINIZ DA SILVA MONTEIRO
+Diretor da írea:  		ANANDA DA SILVA CARVALHO
+
+Equipe de Desenvolvimento:
+Main Developer: 		ROBEMAR MORAIS DUARTE JUNIOR
+Developer Support:  	PAULO VINíCIUS BONATES LIRA
+Project Manager: 		DANIEL DE AZEVEDO CASAS 
+**************************||  Powered by ATIC - SEBRAE/AM ||*************************-->
+<html>
+<head>
+	<link type="text/css" rel="stylesheet" href="/style-guide/css/fluig-style-guide.min.css"/>
+	<script type="text/javascript" src="/portal/resources/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/portal/resources/js/mustache/mustache-min.js"></script>
+	<script type="text/javascript" src="/style-guide/js/fluig-style-guide.min.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/webdesk/vcXMLRPC.js"></script>
+	<script type="text/javascript" src="dinamicTable.js"></script>
+	<script type="text/javascript" src="custom.js"></script>
+	<script type="text/javascript" src="acao.js"></script>
+	<script type="text/javascript" src="projeto.js"></script>
+	<script type="text/javascript" src="unidade.js"></script>
+   <meta charset="utf-8">
+	<style type="text/css"> .Obrigatorio{ color: red; } </style>
+
+</head>
+<body onload="montarArray();checkedValidate();habilitar();PegaNome();"> 
+	
+<div class="fluig-style-guide">
+<form name="form" role="form" id="form">
+
+<input type="hidden" name="hdn_nome" id="hdn_nome">
+<input type="hidden" name="hdn_numSuperior" id="hdn_numSuperior">
+<input type="hidden" name="hdn_array" id="hdn_array">
+<input type="hidden" name="hdn_status" id="hdn_status">
+
+<!---------------------------------------------------------------Abertura Painel com o Cabeçalho-------------------------------------------------------->
+	<div class="panel panel-primary" id="AquisicaoProdutoServico">
+	<div class="panel-heading">
+		<h1>
+			<b>Aquisição de Produto/Serviço</b>
+		</h1>
+	</div>
+	</div>
+<!----------------------------------------------------------------Fechamento Painel com Cabeçalho------------------------------------------------------->
+
+
+<!-------------------------------------------------------Abertura Painel com Cabeçalho Dados Solicitante------------------------------------------------>
+	<div class="panel panel-primary" id="DadosSolicitante">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Dados do Solicitante</b>
+		</h3>
+	</div>
+<!--------------------------------------------------Fechamento Painel com Cabeçalho Dados Solicitante--------------------------------------------------->
+<!-------------------------------------------------------Abertura Painel com Dados do Solicitante------------------------------------------------------->
+	<div class="panel-body">
+	<div class="form-group row">
+	<div class="col-md-4">
+		<label for="slc_NomeSolicita">Nome Solicitante:</label>
+		<select name="slc_NomeSolicita" id="slc_NomeSolicita" dataset="colleague" datasetkey="colleagueId" datasetvalue="colleagueName" 
+		class="form-control" readonly></select>
+	</div>
+	<div class="col-md-4">
+		<label for="txt_DataSolicita">Data e horário:</label>
+		<input type="text" class="form-control" name="txt_DataSolicita" id="txt_DataSolicita" readonly>
+	</div>
+	<div class="col-md-4" id="Numero_Process_Atual">
+		<label for="txt_NumProcess">Numero do Processo:</label>
+		<input type="text" class="form-control" name="txt_NumProcess" id="txt_NumProcess" readonly>
+	</div>
+	</div>
+	<div class="form-group row">
+	<div class="col-md-4">
+
+
+		<label for="cmb_GerenteSolicitante">Superior para Aprovação:</label>
+		<!--<input type="text" class="form-control" name="txt_GerenteSolicitante" id="txt_GerenteSolicitante" readonly>-->
+		<select 
+		name=			"cmb_GerenteSolicitante" 
+		id=				"cmb_GerenteSolicitante" 
+		dataset=		"dsc_Unidades" 
+		datasetkey=		"Matricula" 
+		datasetvalue=	"NomeGerente" 
+		class=			"form-control"
+		>
+	</select>
+	
+	</div>
+	<div class="col-md-4">
+		<label class="txt_UnidadeSolicitante">Unidade Solicitante:</label>
+		<input type="text" class="form-control" name="txt_UnidadeSolicitante" id="txt_UnidadeSolicitante" readonly>
+	</div>
+	<div class="col-md-4" id="Numero_Pasta">
+		<label class="txt_NumPastaAzul">NÂ° da Pasta Azul</label>
+		<input type="text" class="form-control" name="txt_NumPastaAzul" id="txt_NumPastaAzul" readonly>
+	</div>
+	</div>
+	</div>
+	</div>
+<!------------------------------------------------------Fechamento Painel Dados do Solicitante--------------------------------------------------------->
+
+<div class="paragraph-is-required system-message-information alert alert-info" role="alert">Todos os campos com * são de preenchimento obrigatório.</div>
+
+
+
+
+<!-------------------------------------------------------Abertura Painel com Cabeçalho Dados da Contratação-------------------------------------------->
+	<div class="panel panel-primary" id="DadosContratacao">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Dados da Contratação</b>
+		</h3>
+	</div>
+<!---------------------------------------------------Fechamento Painel com Cabeçalho Dados da Contratação---------------------------------------------->
+<!-------------------------------------------------------Abertura Painel com Dados da Contraração------------------------------------------------------>
+	<div class="panel-body">
+	<div class="col-md-2">
+	<div class="form-group">
+		<label for="txt_dataInicio">Data de Início<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<input type="date" class="form-control" name="txt_dataInicio" id="txt_dataInicio">
+	</div>
+	</div>
+	<div class="col-md-2">
+	<div class="form-group">
+		<label for="txt_dataTermino">Data de Término<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<input type="date" class="form-control" name="txt_dataTermino" id="txt_dataTermino"> 
+	</div>
+	</div>
+	<div class="col-md-2">
+	<div class="form-group">
+		<label for="txt_dataAprovDirex">Data de aprovação Direx:</label>
+		<input type="date" class="form-control" name="txt_dataAprovDirex" id="txt_dataAprovDirex"> 
+	</div>
+	</div>
+	<div class="col-md-3">
+	<div class="form-group">
+		<label for="txt_modalidade">Modalidade<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<select class="form-control" name="txt_modalidade" id="txt_modalidade" onChange="habilitar()" >
+			<option value="0"></option>
+			<option value="Licitação">Licitação</option>
+			<option value="Dispensa">Dispensa</option>
+			<option value="Inexigibilidade">Inexigibilidade</option>
+			<option value="Adesão á  Ata de Registro de Preço">Adesão á  Ata de Registro de Preço</option>
+		</select> 
+		
+
+			
+			<div class="card" id="checkInex">
+   					 <div class="card-body">
+      						 <a href="CheckList Inexigibilidade ajustado.pdf" target="_blank" style="color:blue;" >CheckList para Contratação por Inexigibilidade</a>
+   				 </div>
+			</div>
+			
+			<div class="card" id="checkLicit">
+   					 <div class="card-body">
+      						 <a href="LICITACAO_CHECKLIST.pdf" target="_blank" style="color:blue;" >CheckList para Contratação por Licitação</a>
+   				 </div>
+			</div>
+		
+			<div class="card" id="checkDisp">
+   					 <div class="card-body">
+      						 <a href="DISPENSA_CHECK_LIST.pdf" target="_blank" style="color:blue;" >CheckList para Contratação por Dispensa</a>
+   				 </div>
+			</div>
+		
+		<div class="card" id="checkAta">
+   					 <div class="card-body">
+      						 <i class="flaticon flaticon-lock icon-sm" aria-hidden="true"></i><a href="ADESAO_ATA_CHECK_LIST.pdf" target="_blank" style="color:blue;" >CheckList para Contratação por Adesão a Ata/Carona</a>
+   				 </div>
+			</div>
+		
+	</div>
+	</div>
+	<div class="col-md-3">
+	<div class="panel panel-primary">
+	<div class="panel-body fs-sm-space media clearfix">
+		<header><b>Parecer</b></header>
+		<lu class="list-inline">
+		<li><div class="custom-checkbox custom-checkbox-primary">
+			<input type="checkbox" name="ckb_a" id="ckb_a">
+			<label for="ckb_a">NTIC</label>
+			</div>
+		</li>
+		<li>
+			<div class="custom-checkbox custom-checkbox-primary">
+			<input type="checkbox" name="ckb_b" id="ckb_b">
+			<label for="ckb_b">UMP</label>
+			</div>
+		</li>
+		</lu>
+	</div>
+	</div>
+	</div>
+
+
+	<div class="col-md-12">
+	<div class="form-group">                    
+		<label for="txt_justificativa">Justificativa da Contratação<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<textarea class="form-control" name="txt_justificativa" id="txt_justificativa"></textarea>
+	</div>
+	<div class="form-group">
+		<label for="txt_objetoContratacao">Objeto da Contratação<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<textarea class="form-control" name="txt_objetoContratacao" id="txt_objetoContratacao"></textarea>
+	</div>
+	<div class="form-group">
+		<label for="txt_detalhiContratacao">Detalhamento da Contratação<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<textarea class="form-control" name="txt_detalhiContratacao" id="txt_detalhiContratacao"></textarea>
+	</div>
+	<div class="form-group">
+		<label for="txt_qualificTecnica">Qualificação Técnica<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<textarea type="text" class="form-control" name="txt_qualificTecnica" id="txt_qualificTecnica"></textarea>
+	</div>
+	<div class="form-group">
+		<label for="txt_obrigContratada">ObrigaçÃµes Específicas da Contratada<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<textarea type="text" class="form-control" name="txt_obrigContratada" id="txt_obrigContratada"></textarea>
+	</div>
+	</div>
+	</div>
+	</div>
+
+<!-------------------------------------------------------Fechamento Painel com Dados da Contratação---------------------------------------------------->
+
+<!------------------------------------------------Abertura  Cabeçalho Painel com Dados do Fornecedor-------------------------------------------->
+	<div class="panel panel-primary" id="NomeFornecedor">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Dados do Fornecedor</b>
+		</h3>
+	</div>
+<!----------------------------------------------Fechamento Cabeçalho Painel com Dados do Fornecedor------------------------------------------>
+
+
+
+<!----------------------------------------------Abertura Painel com Dados do Fornecedor----------------------------------------------->
+	<div class="panel-body">
+	<div class="col-md-6">
+	<div class="panel-body">
+	
+<div class="col-md-8" id="z1" >
+<div class="form-group">
+	<label for="txt_Favorecido">RAZAO SOCIAL:</label>
+	<input 	type=		"zoom"  
+			id=			"txt_Favorecido"  
+			name=		"txt_Favorecido"
+			data-zoom="{
+			'displayKey':				'NOME',
+			'datasetId':				'dsc_Favorecido',
+			'maximumSelectionLength':	'1',
+			'placeholder':				'Escolha o Favorecido',
+			'fields':[
+			{
+				'field':				'NOME',
+				'label':				'RAZAO SOCIAL'
+			}
+			]
+			}">
+</div>
+
+</div>
+
+
+<div class="col-md-4" id="z3">
+<div class="form-group">
+	<label for="txt_CNPJ_CPF">CNPJ/CPF:</label>
+	<input type=		"zoom"  
+			id=			"txt_CNPJ_CPF"  
+			name=		"txt_CNPJ_CPF"
+			data-zoom="{
+			'displayKey':				'CGCCFO',
+			'datasetId':				'dsc_Favorecido',
+			'maximumSelectionLength':	'1',
+			'placeholder':				'Escolha o Favorecido',
+			'fields':[
+			{
+				'field':				'CGCCFO',
+				'label':				'CGCCFO'
+			}
+			]
+			}">
+	<!-- type="text" class="form-control" name="txt_CNPJ_CPF" id="txt_CNPJ_CPF"> -->
+</div>
+</div>
+	
+	</div>
+	</div>	
+	</div>
+	</div>
+<!---------------------------------------------------Fechamento Painel com Dados do Fornecedor------------------------------------------->
+
+
+
+
+<!----------------------------------------------------Abertura Painel Cabeçalho Dotação Orçamentaria------------------------------------------------>
+	<div class="panel panel-primary" id="painel_dadosrateio">
+	<div class="panel-heading ">
+		<h3 class="panel-title"> 
+			<b>Rateio</b>
+		</h3>
+	</div>
+<!---------------------------------------------------Fechamento Painel com Cabeçalho Dotação Orçamentaria------------------------------------------->
+<!-----------------------------------------------------Abertura Painel Dotação Orçamentaria--------------------------------------------------------->
+	<div class="panel-body">
+	<div class="form-group  table-responsive" >
+	<table class="table"> 
+	<tbody>
+		<tr>
+			<td>
+				<button type="button" class="addRateio" name="addIndex">Inserir Rateio</button>
+			</td>
+		</tr>       
+		<tr>
+			<td>
+				<table id="dadosrateio" tablename="dadosrateio" class="table table-hover" noaddbutton="true" nodeletebutton="true" title="counter">
+				<thead>
+					<tr>
+					<td></td>
+					
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<span class="fluig-style-guide fs-display-block fs-md-space">
+							<i type="button" class="fluigicon fluigicon-trash fluigicon-md delRateio"  id="deleta_rateio" name="deleta_rateio" 
+							 style="cursor:pointer" title="delIndex"></i> 
+						</span>
+						</td>
+						<td>	
+							<div class="col-md-9">
+							<div class="form-group">
+								<div id="az" style="display: none;">
+								<label for="txt_projeto">Projeto<span class="Obrigatorio"><strong>*</strong></span>:</label>													
+								<input 	type="zoom"  
+								id="txt_projeto"  
+								name="txt_projeto"
+								data-zoom="{
+								'displayKey':'NOME',
+								'datasetId':'dsprojeto',
+								'maximumSelectionLength':'1',
+								'placeholder':'Escolha o projeto',
+								'fields':[
+								{
+									'field':'CODCCUSTO',
+									'label':'CODIGO'
+								},{
+										'field':'NOME',
+										'label':'NOME',
+										'standard':'true'
+								}
+								]
+								}" ></div>
+								<input type="hidden" name="txt_codprojeto" id="txt_codprojeto">
+								<div id="projetov" style="display: d;"></div>
+							</div>
+							</div>
+							<div class="col-md-1">
+							<div class="form-group">
+								<label for="txt_percentual">Percentual<span class="Obrigatorio"><strong>*</strong></span>:</label>
+								<input  class="form-control" type="text" name="txt_percentual" id="txt_percentual" onchange="validadePercentual(this)">
+								<input	type="hidden" name="hd_percentual" id="hd_percentual">
+							</div>
+							</div>									
+							<div class="col-md-2">
+							<div class="form-group">
+								<label for="txt_saldo">Saldo:</label>
+								<input  class="form-control mm" type="text" name="txt_saldo" id="txt_saldo" readonly>
+							</div>
+							</div>
+							<br>
+							<div class="col-md-9">
+							<div class="form-group">
+								<div id="az" style="display: none;">
+								<label for="txt_acao">Ação<span class="Obrigatorio"><strong>*</strong></span>:</label>
+								<input type="zoom" 
+								class="form-control" 
+								id="txt_acao" 
+								name="txt_acao"
+								data-zoom="{
+								'displayKey':'NOME',
+								'datasetId':'dsacao',
+								'maximumSelectionLength':'1',
+								'placeholder':'Escolha a ação',
+								'fields':[
+								{
+									'field':'CODCCUSTO',
+									'label':'CODIGO',
+									'search':'true'
+									
+								},{
+										'field':'NOME',
+										'label':'NOME',
+										'search':'true',
+										'standard':'true'
+								}
+								]
+								}" ></div>
+								<input type="hidden" name="txt_codacao" id="txt_codacao">
+								<div id="acaov" style="display: d;"></div>
+							</div> 
+							</div>
+							<br>
+							<div class="col-md-9">
+							<div class="form-group">
+								<div id="az" style="display: none;">
+								<label for="txt_recursos">Unidade<span class="Obrigatorio"><strong>*</strong></span>:</label>
+								<input type="zoom" 
+								class="form-control" 
+								id="txt_recursos" 
+								name="txt_recursos"
+								data-zoom="{
+								'displayKey':'NOME',
+								'datasetId':'dsunidade',
+								'maximumSelectionLength':'1',
+								'placeholder':'Escolha a unidade',
+								'fields':[
+								{
+									'field':'CODCCUSTO',
+									'label':'CODIGO'
+								},{
+										'field':'NOME',
+										'label':'NOME',
+										'standard':'true'
+								}
+								]
+								}" ></div>
+							<input type="hidden" name="txt_codrecurso" id="txt_codrecurso">
+							<div id="unidadev" style="display: d;"></div>
+							</div>
+							</div>
+						</td> 
+					</tr>
+				</tbody>
+				</table>
+			</td>
+		</tr>		
+	</tbody>	
+	</table>
+	</div>
+	</div>
+	</div>
+<!--------------------------------------------------Fechamento Painel com Cabeçalho Despesa de Viagem----------------------------------------------->
+
+
+<!------------------------------------------------Abertura Painel com Cabeçalho Custo da Contratação-------------------------------------------->
+	<div class="panel panel-primary" id="CustoTotalContracao">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Custo Total da Contratação</b>
+		</h3>
+	</div>
+<!----------------------------------------------Fechamento Painel com Cabeçalho Custo da Contratação----------------------------------------->
+
+
+
+<!----------------------------------------------Abertura Painel com Dados Custo da Contratação----------------------------------------------->
+	<div class="panel-body">
+	<div class="col-md-6">
+	<div class="panel-body">
+	<div class="col-md-12">
+		<label for="txt_CustoTotal"><h3>Estimativa de Custo:</h3></label>
+		<div class="input-group">
+		<input type="text" class="form-control" name="txt_CustoTotal" id="txt_CustoTotal" onchange="formatarMoeda(this)">
+		<span class="input-group-addon">$</span>
+	</div>
+	</div>
+
+	<div class="col-md-12">
+	<br>	
+	<div class="panel panel-primary" id="DadosConvenio">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Dados de Convênio</b>
+		</h3>
+	</div>
+	<div class="panel-body">
+	<div class="col-md-12">
+	<div class="form-group">
+		<label for="txt_NumeroConvenio">Número do Convênio:</label>
+		<input type="text" class="form-control" name="txt_NumeroConvenio" id="txt_NumeroConvenio" onkeyup="formatarConvenio(this)">
+	</div>
+	</div>
+	<div class="col-md-12">
+	<div class="form-group">
+		<label for="txt_EntidadeInstituicao">Entidade/Instituição Conveniada:</label>
+		<input type="text" class="form-control" name="txt_EntidadeInstituicao" id="txt_EntidadeInstituicao">
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	<div class="col-md-6">
+	<div class="panel-body">
+	<div class="panel panel-primary" id="ReceitaPrevista">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			<b>Dados da Receita Prevista a Receber</b>
+		</h3>
+	</div>
+	<div class="panel-body">
+	<div class="col-md-12">
+	<div class="form-group">
+		<label for="txt_Contrapartida">Valor da Contrapartida<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<div class="input-group">
+		<input type="text" class="form-control" name="txt_Contrapartida" id="txt_Contrapartida" onchange="formatarMoeda(this);">
+		<span class="input-group-addon">$</span>
+	</div>
+	</div>
+	</div>
+	<div class="col-md-12">
+	<div class="form-group">
+		<label for="txt_Pagamento">Forma de Pagamento<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<select  class="form-control" name="txt_Pagamento" id="txt_Pagamento" onclick="validaContra()">
+			<option value="Selecione">Selecione</option>
+			<option value="Especie">Espécie</option>
+			<option value="BoletoBancario">Boleto Bancário</option>
+			<option value="TransferenciaBancaria">Transferência Bancária</option>
+			<option value="DepositoBancario">Depósito Bancário</option>
+			<option value="CartaoCredido">Cartão de Crédito</option>
+			<option value="CartaoDebito">Cartão de Débito</option>
+			<option value="CartaoBNDES">Cartão BNDES</option>
+		</select>
+	</div>
+	</div>
+	<div class="col-md-12">
+	<div class="form-group">
+		<label for="txt_Parcelas">Número de Parcelas<span class="Obrigatorio"><strong>*</strong></span>:</label>
+		<input type="text" class="form-control" name="txt_Parcelas" id="txt_Parcelas">
+	</div>
+	</div>
+	<div class="col-md-12">
+	<div class="custom-radio custom-radio-primary">
+		<input type="radio" name="radiotypes" value="sim" id="radio-1" onclick="enableContrapartida(this)">
+		<label for="radio-1">Sim, o contrato recebe receita de contra partida.</label>
+	</div>
+	<div class="custom-radio custom-radio-danger">
+		<input type="radio" name="radiotypes" value="Nao" id="radio-2" onclick="enableContrapartida(this)">
+		<label for="radio-2" id="checkboxUnic"></label>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>	
+	</div>
+<!---------------------------------------------------Fechamento Painel com Dados Custo da Contratação------------------------------------------->
+
+
+<!-----------------------------------------------------------------JavaScript------------------------------------------------------------------->
+<script type="text/javascript">
+		var nome = document.getElementById("hdn_nome").value
+		var part = "Eu, <h9 style=\"color:red;\"><b>" + nome + "</b></h9>, declaro e confirmo que para este contrato não há previsão de RECEITA conforme regra de negócios do SEBRAE"
+		document.getElementById("checkboxUnic").innerHTML = part
+</script>
+</form>
+</div>
+</body>
+</html>
